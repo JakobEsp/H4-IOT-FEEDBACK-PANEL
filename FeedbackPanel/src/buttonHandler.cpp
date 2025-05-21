@@ -12,10 +12,6 @@ ButtonHandler::ButtonHandler(int ledPin, int buttonPin, void (*callback)()){
     this->buttonPin = buttonPin;
     this->debounceTime = DEBOUNCE_TIME;
     this->callback = callback;
-    pinMode(ledPin, OUTPUT);
-    pinMode(buttonPin, INPUT_PULLUP);
-    // touchSleepWakeUpEnable(buttonPin, THRESHOLD);
-
 }
 
 void ButtonHandler::handleButtonPress(){
@@ -42,4 +38,8 @@ void ButtonHandler::turnOffLED(){
 void ButtonHandler::clearButtonState(){
     lastDebounceTime = 0; // Reset the last debounce time
     lastButtonPress = 0; // Reset the last button press time
+}
+
+void ButtonHandler::enableWakeUpListener(){
+    touchSleepWakeUpEnable(buttonPin, THRESHOLD);
 }

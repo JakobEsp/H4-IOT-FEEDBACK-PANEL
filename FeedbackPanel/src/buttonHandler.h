@@ -20,6 +20,8 @@ public:
     void handleButtonPress();
     void turnOffLED();
     void clearButtonState();
+    void enableWakeUpListener();
+    int getButtonPin() { return buttonPin; }
 };
 
 #endif

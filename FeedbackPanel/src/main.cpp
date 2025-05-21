@@ -4,7 +4,7 @@
 #include "buttonHandler.h"
 #include "timeManager.h"
 
-#define LED_GREEN 5
+#define LED_GREEN 4
 #define LED_BLUE 21
 #define LED_YELLOW 19
 #define LED_RED 18
@@ -39,10 +39,22 @@ ButtonHandler* btns[] = {&green_btn, &blue_btn, &yellow_btn, &red_btn};
 
 void setup() {
     Serial.begin(115200); // output serial to the serial monitor in terminal
+
     green_btn.setup();
     blue_btn.setup();
     yellow_btn.setup();
     red_btn.setup();
+
+    touch_pad_t touchPin = esp_sleep_get_touchpad_wakeup_status();
+    if (touchPin == TOUCH_PAD_MAX) {
+        Serial.println("No touch pin detected");
+    } else {
+        for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
+            btns[i]->handleButtonPress(); // enable touch wakeup
+        }
+    }
+    Serial.print("Touch Pin: ");
+    Serial.println(touchPin);
 
     // Connecting to Wi-Fi
     Serial.println("Connecting to");
@@ -63,6 +75,7 @@ void setup() {
     // Initialize the timeHandler
     timeHandler.begin();
     timeHandler.printLocalTime();
+   
 }
 
 void loop() {
@@ -71,14 +84,16 @@ void loop() {
         Serial.println("Cooldown ended");
         for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
             btns[i]->turnOffLED(); // turn off all LEDs
+            btns[i]->enableWakeUpListener(); // enable touch wakeup
         }   
+        Serial.println("Going sleep"); 
+        esp_deep_sleep_start(); 
     }else if(
         coolDownStart > 0 && (millis() - coolDownStart) < buttonCooldown
     ){
         return;
     }
     
-
     green_btn.handleButtonPress();
     blue_btn.handleButtonPress();
     yellow_btn.handleButtonPress();
