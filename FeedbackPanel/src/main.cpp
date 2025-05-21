@@ -6,15 +6,15 @@
 
 // #define LED_GREEN 13
 
-#define LED_GREEN 13
-#define LED_BLUE 12
-#define LED_YELLOW 14
-#define LED_RED 27
+#define LED_GREEN 5
+#define LED_BLUE 21
+#define LED_YELLOW 19
+#define LED_RED 18
 
-#define BTN_GREEN 4
-#define BTN_BLUE 5
-#define BTN_YELLOW 18 
-#define BTN_RED 23
+#define BTN_GREEN 13
+#define BTN_BLUE 12
+#define BTN_YELLOW 14 
+#define BTN_RED 27
 
 #define WIFI_SSID "IoT_H3/4"
 #define WIFI_PASSWORD "98806829"
