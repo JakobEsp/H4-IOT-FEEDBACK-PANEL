@@ -14,6 +14,11 @@
 #define BTN_YELLOW 14 
 #define BTN_RED 27
 
+#define TOUCH_BTN_GREEN 4
+#define TOUCH_BTN_BLUE 5
+#define TOUCH_BTN_YELLOW 6
+#define TOUCH_BTN_RED 7
+
 #define WIFI_SSID "IoT_H3/4"
 #define WIFI_PASSWORD "98806829"
 
@@ -29,10 +34,10 @@ int lastButtonPress = 0; // variable to store the last button press time
 
 
 
-ButtonHandler green_btn(LED_GREEN, BTN_GREEN, startCoolDown);
-ButtonHandler blue_btn(LED_BLUE, BTN_BLUE, startCoolDown);
-ButtonHandler yellow_btn(LED_YELLOW, BTN_YELLOW, startCoolDown);
-ButtonHandler red_btn(LED_RED, BTN_RED, startCoolDown);
+ButtonHandler green_btn(LED_GREEN, BTN_GREEN, TOUCH_BTN_GREEN, startCoolDown);
+ButtonHandler blue_btn(LED_BLUE, BTN_BLUE, TOUCH_BTN_BLUE, startCoolDown);
+ButtonHandler yellow_btn(LED_YELLOW, BTN_YELLOW, TOUCH_BTN_YELLOW, startCoolDown);
+ButtonHandler red_btn(LED_RED, BTN_RED, TOUCH_BTN_RED, startCoolDown);
 
 
 ButtonHandler* btns[] = {&green_btn, &blue_btn, &yellow_btn, &red_btn};
@@ -50,7 +55,11 @@ void setup() {
         Serial.println("No touch pin detected");
     } else {
         for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
-            btns[i]->handleButtonPress(); // enable touch wakeup
+            if(btns[i]->getTouchPin() == touchPin){
+                Serial.print("Touch Pin activiated ");
+                Serial.println(touchPin);
+                btns[i]->handleButtonPress(); // enable touch wakeup
+            }
         }
     }
     Serial.print("Touch Pin: ");

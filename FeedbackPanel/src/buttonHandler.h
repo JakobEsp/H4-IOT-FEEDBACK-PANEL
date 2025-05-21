@@ -7,6 +7,7 @@ class ButtonHandler {
 private:
     int ledPin;
     int buttonPin;
+    int touchPin;
     int debounceTime;
     int currentButtonState;
     int lastButtonState;
@@ -15,13 +16,14 @@ private:
     unsigned long lastDebounceTime = 0;
     unsigned long lastButtonPress = 0;
 public:
-    ButtonHandler(int ledPin, int buttonPin, void (*callback)());
+    ButtonHandler(int ledPin, int buttonPin,int touchPin, void (*callback)());
     void setup();
     void handleButtonPress();
     void turnOffLED();
     void clearButtonState();
     void enableWakeUpListener();
     int getButtonPin() { return buttonPin; }
+    int getTouchPin() { return touchPin; }
 };
 
 #endif
