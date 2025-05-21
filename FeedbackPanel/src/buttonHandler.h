@@ -11,12 +11,14 @@ private:
     int currentButtonState;
     int lastButtonState;
     int ledState = LOW;
+    void (*callback)();
     unsigned long lastDebounceTime = 0;
     unsigned long lastButtonPress = 0;
 public:
-    ButtonHandler(int ledPin, int buttonPin);
+    ButtonHandler(int ledPin, int buttonPin, void (*callback)());
     void setup();
     void handleButtonPress();
+    void turnOffLED();
 };
 
 #endif

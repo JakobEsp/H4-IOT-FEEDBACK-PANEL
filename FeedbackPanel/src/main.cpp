@@ -17,6 +17,8 @@
 #define WIFI_SSID "IoT_H3/4"
 #define WIFI_PASSWORD "98806829"
 
+void startCoolDown();
+
 // NTP server
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 0;
@@ -28,10 +30,15 @@ int buttonCooldown = 7000; // 7 seconds cooldown time
 int coolDownStart = 0; // variable to store the start time of the cooldown
 int lastButtonPress = 0; // variable to store the last button press time
 
-ButtonHandler green_btn(LED_GREEN, BTN_GREEN);
-ButtonHandler blue_btn(LED_BLUE, BTN_BLUE);
-ButtonHandler yellow_btn(LED_YELLOW, BTN_YELLOW);
-ButtonHandler red_btn(LED_RED, BTN_RED);
+
+
+ButtonHandler green_btn(LED_GREEN, BTN_GREEN, startCoolDown);
+ButtonHandler blue_btn(LED_BLUE, BTN_BLUE, startCoolDown);
+ButtonHandler yellow_btn(LED_YELLOW, BTN_YELLOW, startCoolDown);
+ButtonHandler red_btn(LED_RED, BTN_RED, startCoolDown);
+
+
+ButtonHandler* btns[] = {&green_btn, &blue_btn, &yellow_btn, &red_btn};
 
 void setup() {
     Serial.begin(115200); // output serial to the serial monitor in terminal
@@ -62,47 +69,23 @@ void setup() {
 }
 
 void loop() {
+    if(coolDownStart > 0 && (millis() - coolDownStart) >= buttonCooldown) {
+        coolDownStart = 0; // reset cooldown
+        Serial.println("Cooldown ended");
+        for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
+            btns[i]->turnOffLED(); // turn off all LEDs
+        }   
+    }else if(
+        coolDownStart > 0 && (millis() - coolDownStart) < buttonCooldown
+    ){
+        return;
+    }
+    
 
-
-    // if(coolDownStart > 0 && (millis() - coolDownStart) >= buttonCooldown) {
-    //     coolDownStart = 0; // reset cooldown
-    // }else{
-    //     return; // exit loop if cooldown is active
-    // }
     green_btn.handleButtonPress();
     blue_btn.handleButtonPress();
     yellow_btn.handleButtonPress();
     red_btn.handleButtonPress();       
-    // if (digitalRead(BTN_GREEN) == LOW){
-    //     Serial.println("Button pressed");
-    //     digitalWrite(LED_GREEN, HIGH);
-    //     coolDownStart = millis(); // start cooldown
-    //     delay(1000);
-    //     digitalWrite(LED_GREEN, LOW);
-    // }
-    // if( digitalRead(BTN_BLUE) == LOW) {
-    //     Serial.println("Button pressed");
-    //     digitalWrite(LED_BLUE, HIGH);
-    //     coolDownStart = millis(); // start cooldown
-    //     delay(1000);
-    //     digitalWrite(LED_BLUE, LOW);
-    // }
-    // if( digitalRead(BTN_YELLOW) == LOW) {
-    //     Serial.println("Button pressed");
-    //     digitalWrite(LED_YELLOW, HIGH);
-    //     coolDownStart = millis(); // start cooldown
-    //     delay(1000);
-    //     digitalWrite(LED_YELLOW, LOW);
-    // }
-    // if( digitalRead(BTN_RED) == LOW) {
-    //     Serial.println("Button pressed");
-    //     digitalWrite(LED_RED, HIGH);
-    //     coolDownStart = millis(); // start cooldown
-    //     delay(1000);
-    //     digitalWrite(LED_RED, LOW);
-    // }
-
-
 }
 
 void printLocalTime(){
@@ -115,3 +98,8 @@ void printLocalTime(){
     Serial.print(&timeinfo, "%A, %B %d %Y %H:%M:%S");
 }
 
+
+void startCoolDown(){
+    coolDownStart = millis(); // start cooldown
+    Serial.println("Cooldown started");
+}
