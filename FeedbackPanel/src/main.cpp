@@ -65,7 +65,7 @@ void setup() {
 
     // Init and get the time
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-    
+    // esp_deep_sleep_start();
 }
 
 void loop() {

@@ -1,7 +1,7 @@
 #include "buttonHandler.h"
 
 #define DEBOUNCE_TIME 500 // milliseconds
-
+#define THRESHOLD 10 // threshold for touch wakeup
 void ButtonHandler::setup(){
     pinMode(ledPin, OUTPUT);
     pinMode(buttonPin, INPUT_PULLUP);
@@ -14,6 +14,8 @@ ButtonHandler::ButtonHandler(int ledPin, int buttonPin, void (*callback)()){
     this->callback = callback;
     pinMode(ledPin, OUTPUT);
     pinMode(buttonPin, INPUT_PULLUP);
+    // touchSleepWakeUpEnable(buttonPin, THRESHOLD);
+
 }
 
 void ButtonHandler::handleButtonPress(){
