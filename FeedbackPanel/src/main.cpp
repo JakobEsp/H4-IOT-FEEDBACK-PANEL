@@ -2,6 +2,8 @@
 #include <WiFi.h>
 #include "time.h"
 #include "buttonHandler.h"
+#include "timeManager.h"
+
 // #define LED_GREEN 13
 
 #define LED_GREEN 13
@@ -19,10 +21,7 @@
 
 void startCoolDown();
 
-// NTP server
-const char* ntpServer = "pool.ntp.org";
-const long  gmtOffset_sec = 0;
-const int   daylightOffset_sec = 3600;
+TimeHandler timeHandler;
 
 int debounceTime = 50; // debounce time in milliseconds
 int buttonCooldown = 7000; // 7 seconds cooldown time
@@ -63,9 +62,9 @@ void setup() {
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
 
-    // Init and get the time
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-    // esp_deep_sleep_start();
+    // Initialize the timeHandler
+    timeHandler.begin();
+    timeHandler.printLocalTime();
 }
 
 void loop() {
@@ -85,19 +84,8 @@ void loop() {
     green_btn.handleButtonPress();
     blue_btn.handleButtonPress();
     yellow_btn.handleButtonPress();
-    red_btn.handleButtonPress();       
+    red_btn.handleButtonPress(); 
 }
-
-void printLocalTime(){
-  struct tm timeinfo;
-  if(!getLocalTime(&timeinfo)){
-    Serial.println("Failed to obtain time");
-    return;
-  }
-    Serial.print("Current time: ");
-    Serial.print(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-}
-
 
 void startCoolDown(){
     coolDownStart = millis(); // start cooldown
