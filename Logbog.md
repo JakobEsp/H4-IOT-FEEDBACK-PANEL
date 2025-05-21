@@ -6,3 +6,7 @@ Vi startede med at få et led og en knap til at virke. Derefter Satte vi alle kn
 Vi opdelte derefter arbejdet, for at hurtigere indhente det vi er bagud fra igår.
 En tog Wifi og NTP
 Imens en anden lavede ButtonHandler klasse, til at stå for setup og håndtering af knappen og tilhørende LED. Dette inkludere løsning til debouncing & timeout.
+21/05 - 14:10
+Vi har opdelt NTP / tidshåndetering til sin egen klasse. Og begyndt på deep sleep implementeringen. Vi har opsat sådan det "virker", men mere en poc. Vi overvejer at gøre det til sin egen lille process / countdown. 
+Der er flere der er gået udenom loop metoden, men jeg har svært ved at se hvordan vi skal håndtere debounce uden. Har fået lidt hjælp af Sebastian, og måske jeg ser på debounce som en ting med at lidt større timeout...
+I morgen vil vi færdiggøre vores deep sleep og få implementeret MQTT, til data kald.
