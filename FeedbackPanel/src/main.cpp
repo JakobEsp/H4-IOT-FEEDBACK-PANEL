@@ -4,8 +4,6 @@
 #include "buttonHandler.h"
 #include "timeManager.h"
 
-// #define LED_GREEN 13
-
 #define LED_GREEN 5
 #define LED_BLUE 21
 #define LED_YELLOW 19
@@ -89,5 +87,8 @@ void loop() {
 
 void startCoolDown(){
     coolDownStart = millis(); // start cooldown
+    for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
+        btns[i]->clearButtonState(); // turn off all LEDs
+    } 
     Serial.println("Cooldown started");
 }

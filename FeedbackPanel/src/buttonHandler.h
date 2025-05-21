@@ -19,6 +19,7 @@ public:
     void setup();
     void handleButtonPress();
     void turnOffLED();
+    void clearButtonState();
 };
 
 #endif
