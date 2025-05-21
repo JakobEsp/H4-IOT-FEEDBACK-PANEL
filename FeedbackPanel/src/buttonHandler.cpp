@@ -1,20 +1,32 @@
 #include "buttonHandler.h"
 
-class ButtonHandler{
+#define DEBOUNCE_TIME 100 // milliseconds
 
-    private:
-        int ledPin;
-        int buttonPin;
-        int debounceTime;
-        unsigned long lastDebounceTime = 0; // variable to store the last debounce time
-        unsigned long lastButtonPress = 0; // variable to store the last button press time
+void ButtonHandler::setup(){
+    pinMode(ledPin, OUTPUT);
+    pinMode(buttonPin, INPUT_PULLUP);
+}
 
-    public:
-        ButtonHandler(int ledPin, int buttonPin, int debounceTime, int cooldownTime){
-            this->ledPin = ledPin;
-            this->buttonPin = buttonPin;
-            this->debounceTime = debounceTime;
-            pinMode(ledPin, OUTPUT);
-            pinMode(buttonPin, INPUT_PULLUP);
-        }
-};
+ButtonHandler::ButtonHandler(int ledPin, int buttonPin){
+    this->ledPin = ledPin;
+    this->buttonPin = buttonPin;
+    this->debounceTime = DEBOUNCE_TIME;
+    pinMode(ledPin, OUTPUT);
+    pinMode(buttonPin, INPUT_PULLUP);
+}
+
+void ButtonHandler::handleButtonPress(){
+    int buttonState = digitalRead(buttonPin);
+    unsigned long currentTime = millis();
+
+    if (buttonState == LOW) {
+        // Check if the button is pressed for more than the debounce time     
+        lastDebounceTime = currentTime; // Update the last debounce time
+    } 
+    if ((currentTime - lastDebounceTime) > debounceTime && lastDebounceTime > 0) {
+        digitalWrite(ledPin, HIGH); // Turn on the LED
+        Serial.println("Button Pressed");
+        lastDebounceTime = 0; // Update the last button press time
+    }
+}
+
