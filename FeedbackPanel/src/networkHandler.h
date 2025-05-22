@@ -6,6 +6,7 @@ class NetworkHandler {
 
     public:
         void connect();
+        void disconnect();
 };  
 
 #endif

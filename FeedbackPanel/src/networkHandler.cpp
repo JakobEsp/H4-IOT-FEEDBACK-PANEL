@@ -16,3 +16,8 @@ void NetworkHandler::connect() {
     Serial.println(WiFi.localIP());
 
 }
+
+void NetworkHandler::disconnect() {
+    WiFi.disconnect();
+    Serial.println("Disconnected from WiFi");
+}
