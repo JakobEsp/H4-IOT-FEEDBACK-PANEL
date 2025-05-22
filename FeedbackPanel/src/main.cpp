@@ -23,22 +23,21 @@
 #define WIFI_PASSWORD "98806829"
 
 void startCoolDown();
+void coolDownFinished();
+void enableWakeUpListeners();
 
 TimeHandler timeHandler;
 
 int debounceTime = 50; // debounce time in milliseconds
+
+
 int buttonCooldown = 7000; // 7 seconds cooldown time
-
 int coolDownStart = 0; // variable to store the start time of the cooldown
-int lastButtonPress = 0; // variable to store the last button press time
-
-
 
 ButtonHandler green_btn(LED_GREEN, BTN_GREEN, TOUCH_BTN_GREEN, startCoolDown);
 ButtonHandler blue_btn(LED_BLUE, BTN_BLUE, TOUCH_BTN_BLUE, startCoolDown);
 ButtonHandler yellow_btn(LED_YELLOW, BTN_YELLOW, TOUCH_BTN_YELLOW, startCoolDown);
 ButtonHandler red_btn(LED_RED, BTN_RED, TOUCH_BTN_RED, startCoolDown);
-
 
 ButtonHandler* btns[] = {&green_btn, &blue_btn, &yellow_btn, &red_btn};
 
@@ -58,55 +57,43 @@ void setup() {
             if(btns[i]->getTouchPin() == touchPin){
                 Serial.print("Touch Pin activiated ");
                 Serial.println(touchPin);
-                btns[i]->handleButtonPress(); // enable touch wakeup
+                btns[i]->handleButtonPress();
+                Serial.println("cooldown sharted");
+                Serial.println(coolDownStart);
             }
         }
     }
-    Serial.print("Touch Pin: ");
-    Serial.println(touchPin);
-
-    // Connecting to Wi-Fi
-    Serial.println("Connecting to");
-    Serial.println(WIFI_SSID);
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-    // Wait for connection
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(1000);
-        Serial.println(".");
+    if(!coolDownStart){
+        Serial.println("No Cooldown started Going to sleep");
+        enableWakeUpListeners();
+        esp_deep_sleep_start(); 
     }
-    
-    // Connected to Wi-Fi
-    Serial.println("Connected to WiFi");
-    Serial.print("IP Address: ");
-    Serial.println(WiFi.localIP());
 
-    // Initialize the timeHandler
-    timeHandler.begin();
-    timeHandler.printLocalTime();
-   
+    // make newtork call here
+
+    while(coolDownStart > 0 && (millis() - coolDownStart) < buttonCooldown){
+        delay(50); // wait for cooldown to end
+    }
+
+    coolDownFinished();
 }
 
 void loop() {
-    if(coolDownStart > 0 && (millis() - coolDownStart) >= buttonCooldown) {
-        coolDownStart = 0; // reset cooldown
-        Serial.println("Cooldown ended");
-        for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
-            btns[i]->turnOffLED(); // turn off all LEDs
-            btns[i]->enableWakeUpListener(); // enable touch wakeup
-        }   
-        Serial.println("Going sleep"); 
-        esp_deep_sleep_start(); 
-    }else if(
-        coolDownStart > 0 && (millis() - coolDownStart) < buttonCooldown
-    ){
-        return;
-    }
-    
-    green_btn.handleButtonPress();
-    blue_btn.handleButtonPress();
-    yellow_btn.handleButtonPress();
-    red_btn.handleButtonPress(); 
+}
+
+void enableWakeUpListeners(){
+    for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
+        btns[i]->turnOffLED(); // turn off all LEDs
+        btns[i]->enableWakeUpListener(); // enable touch wakeup
+    }   
+}
+
+void coolDownFinished(){
+    coolDownStart = 0; // reset cooldown
+    Serial.println("Cooldown ended");
+    enableWakeUpListeners();
+    Serial.println("Going sleep"); 
+    esp_deep_sleep_start(); 
 }
 
 void startCoolDown(){
