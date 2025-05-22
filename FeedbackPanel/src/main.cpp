@@ -81,6 +81,7 @@ void setup() {
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
 
+    
     // Initialize the timeHandler
     timeHandler.begin();
     timeHandler.printLocalTime();
