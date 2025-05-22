@@ -15,4 +15,6 @@ I morgen vil vi færdiggøre vores deep sleep og få implementeret MQTT, til dat
 
 
 **22/05**
-
+*11:20*
+Vi har fået færdiggjort den første implementation af deepsleep hvor hele flowet virker, dog uden mqtt kald. Der er blevet lavet en del overvejelser om hvor meget der skulle hånderes i setup & i loop metoden. Men siden vores nuværende løsning ikke har brug for loop, så køre det hele i setup, uden debounce da der kun er et input (touch wakeup).
+Næste step er at få implementeret og færdiggjort mqttHandler klassen.
