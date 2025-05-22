@@ -1,7 +1,1 @@
-# Portfolie
-
-## Harware opsætning
-
-
-## Software 
-
+Se wiki på github
