@@ -4,6 +4,7 @@
 #include "buttonHandler.h"
 #include "timeManager.h"
 #include "networkHandler.h"
+#include "mqttHandler.h"
 
 #define LED_GREEN 4
 #define LED_BLUE 21
@@ -26,8 +27,10 @@ void startCoolDown();
 void coolDownFinished();
 void enableWakeUpListeners();
 
-TimeHandler timeHandler;
+// TimeHandler timeHandler;
 NetworkHandler networkHandler;
+WiFiClient wifiClient;
+MqttHandler mqttHandler(&wifiClient);
 
 int debounceTime = 50; // debounce time in milliseconds
 
@@ -72,6 +75,10 @@ void setup() {
 
     // make newtork call here
     networkHandler.connect();
+
+    mqttHandler.sendResult(&green_btn);
+
+    networkHandler.disconnect();
 
     while(coolDownStart > 0 && (millis() - coolDownStart) < buttonCooldown){
         delay(50); // wait for cooldown to end
