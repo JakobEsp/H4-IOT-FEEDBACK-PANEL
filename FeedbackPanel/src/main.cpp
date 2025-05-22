@@ -3,6 +3,7 @@
 #include "time.h"
 #include "buttonHandler.h"
 #include "timeManager.h"
+#include "networkHandler.h"
 
 #define LED_GREEN 4
 #define LED_BLUE 21
@@ -19,14 +20,14 @@
 #define TOUCH_BTN_YELLOW 6
 #define TOUCH_BTN_RED 7
 
-#define WIFI_SSID "IoT_H3/4"
-#define WIFI_PASSWORD "98806829"
+
 
 void startCoolDown();
 void coolDownFinished();
 void enableWakeUpListeners();
 
 TimeHandler timeHandler;
+NetworkHandler networkHandler;
 
 int debounceTime = 50; // debounce time in milliseconds
 
@@ -70,6 +71,7 @@ void setup() {
     }
 
     // make newtork call here
+    networkHandler.connect();
 
     while(coolDownStart > 0 && (millis() - coolDownStart) < buttonCooldown){
         delay(50); // wait for cooldown to end
