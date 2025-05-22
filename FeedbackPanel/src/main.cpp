@@ -100,13 +100,21 @@ void loop() {
     }else if(
         coolDownStart > 0 && (millis() - coolDownStart) < buttonCooldown
     ){
-        return;
+        return; // wait for cooldown to end
+    }else{
+        Serial.println("Going to sleep");
+        Serial.println(coolDownStart);
+        for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
+            btns[i]->turnOffLED(); // turn off all LEDs
+            btns[i]->enableWakeUpListener(); // enable touch wakeup
+        }   
+        esp_deep_sleep_start(); // go to sleep
     }
     
-    green_btn.handleButtonPress();
-    blue_btn.handleButtonPress();
-    yellow_btn.handleButtonPress();
-    red_btn.handleButtonPress(); 
+    // green_btn.handleButtonPress();
+    // blue_btn.handleButtonPress();
+    // yellow_btn.handleButtonPress();
+    // red_btn.handleButtonPress(); 
 }
 
 void startCoolDown(){

@@ -18,18 +18,18 @@ ButtonHandler::ButtonHandler(int ledPin, int buttonPin, int touchPin, void (*cal
 void ButtonHandler::handleButtonPress(){
     int buttonState = digitalRead(buttonPin);
     unsigned long currentTime = millis();
-     
+    digitalWrite(ledPin, HIGH); // Turn on the LED
+    Serial.println("Button Pressed");
+    callback(); // Call the callback function
     //TODO: if another button is pressed during the debounce time, the led will turn on after the cooldown
-    if (buttonState == LOW) {
-        // Check if the button is pressed for more than the debounce time     
-        lastDebounceTime = currentTime; // Update the last debounce time
-    } 
-    if ((currentTime - lastDebounceTime) > debounceTime && lastDebounceTime > 0) {
-        digitalWrite(ledPin, HIGH); // Turn on the LED
-        Serial.println("Button Pressed");
-        callback(); // Call the callback function
-        lastDebounceTime = 0; // Update the last button press time
-    }
+    // if (buttonState == LOW) {
+    //     // Check if the button is pressed for more than the debounce time     
+    //     lastDebounceTime = currentTime; // Update the last debounce time
+    // } 
+    // if ((currentTime - lastDebounceTime) > debounceTime && lastDebounceTime > 0) {
+
+    //     lastDebounceTime = 0; // Update the last button press time
+    // }
 }
 
 void ButtonHandler::turnOffLED(){
