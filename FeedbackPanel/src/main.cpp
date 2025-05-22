@@ -3,6 +3,16 @@
 #include "time.h"
 #include "buttonHandler.h"
 #include "timeManager.h"
+#include <PubSubClient.h>  
+#include <ArduinoJson.h> 
+#include "mqttHandler.h"
+
+#define MQTT_SERVER "192.168.0.130"
+#define MQTT_PORT 1883
+#define MQTT_USERNAME "device11"      
+#define MQTT_PASSWORD "device11-password"
+#define MQTT_TOPIC "sensor/device11"
+
 
 #define LED_GREEN 4
 #define LED_BLUE 21
@@ -21,7 +31,7 @@
 
 #define WIFI_SSID "IoT_H3/4"
 #define WIFI_PASSWORD "98806829"
-
+   
 void startCoolDown();
 void coolDownFinished();
 void enableWakeUpListeners();
@@ -40,6 +50,14 @@ ButtonHandler yellow_btn(LED_YELLOW, BTN_YELLOW, TOUCH_BTN_YELLOW, startCoolDown
 ButtonHandler red_btn(LED_RED, BTN_RED, TOUCH_BTN_RED, startCoolDown);
 
 ButtonHandler* btns[] = {&green_btn, &blue_btn, &yellow_btn, &red_btn};
+
+
+WiFiClient wifiClient;
+PubSubClient mqttClient(wifiClient);
+
+// Create MQTT handler instance
+MqttHandler mqttHandler(&timeHandler);
+
 
 void setup() {
     Serial.begin(115200); // output serial to the serial monitor in terminal
@@ -69,8 +87,62 @@ void setup() {
         esp_deep_sleep_start(); 
     }
 
-    // make newtork call here
+    // Network call - Connect to WiFi and send MQTT message
+    
+    Serial.println("Connecting to WiFi...");
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(1000);
+        Serial.println(".");
+    }
+    
+    if (WiFi.status() == WL_CONNECTED) {
+        Serial.println("\nWiFi connected");
+        Serial.print("IP address: ");
+        Serial.println(WiFi.localIP());
+        
+        // Initialize time from NTP
+        timeHandler.begin();
+        timeHandler.printLocalTime();
+        
+        // Send MQTT timestamp and button press 1- 4
+        // INSERT THE CODE RIGHT HERE - replace these comment lines
+        touch_pad_t touchPin = esp_sleep_get_touchpad_wakeup_status();
+        int buttonNumber = 0;
+        
+        // Determine which button was pressed
+        if (touchPin == TOUCH_BTN_GREEN) buttonNumber = 1;
+        else if (touchPin == TOUCH_BTN_BLUE) buttonNumber = 2;
+        else if (touchPin == TOUCH_BTN_YELLOW) buttonNumber = 3;
+        else if (touchPin == TOUCH_BTN_RED) buttonNumber = 4;
+        
+        if (buttonNumber > 0) {
+            // Connect to MQTT broker
+            mqttHandler.configure(MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, 
+                        MQTT_PASSWORD, "ESP32FeedbackPanel", 
+                        MQTT_TOPIC, "");
 
+            if (mqttHandler.begin()) {
+                char buttonName[10];
+                sprintf(buttonName, "button%d", buttonNumber);
+                
+                // Send button press (buttonName, buttonValue)
+                mqttHandler.sendButtonPress(buttonName, buttonNumber);
+                Serial.print("MQTT message sent for button: ");
+                Serial.println(buttonNumber);
+            }
+            else {
+                Serial.println("Failed to connect to MQTT broker");
+            }
+        }
+        
+        // Disconnect WiFi to save power
+        WiFi.disconnect(true);
+        WiFi.mode(WIFI_OFF);
+    }
+
+    
+    
     while(coolDownStart > 0 && (millis() - coolDownStart) < buttonCooldown){
         delay(50); // wait for cooldown to end
     }

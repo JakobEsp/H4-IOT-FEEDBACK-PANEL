@@ -2,7 +2,7 @@
 #define MQTT_HANDLER_H
 
 #include <Arduino.h>
-#include <WiFiClientSecure.h>
+#include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "timeManager.h"
@@ -13,7 +13,7 @@ class MqttHandler {
 private:
     const char* mqttServer;
     int mqttPort;
-    const char* mqttUsername;
+    const char* mqttUser;
     const char* mqttPassword;
     const char* mqttClientId;
     const char* mqttTopicPrefix;
@@ -22,7 +22,7 @@ private:
     const char* rootCA;
 
     // Client instances
-    WiFiClientSecure* wifiClient;
+    WiFiClient* wifiClient;
     PubSubClient* mqttClient;
 
     // Reference to the time handler

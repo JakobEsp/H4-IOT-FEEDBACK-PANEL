@@ -19,7 +19,7 @@ void MqttHandler::mqttCallback(char* topic, byte* payload, unsigned int length) 
 
 MqttHandler::MqttHandler(TimeHandler* timeHandlerRef) {
     timeHandler = timeHandlerRef;
-    wifiClient = new WiFiClientSecure();
+    wifiClient = new WiFiClient();
     mqttClient = new PubSubClient(*wifiClient);
     messageCallback = nullptr;
     isConnected = false;
@@ -50,14 +50,12 @@ void MqttHandler::configure(const char* server, int port, const char* username,
                            const char* topicPrefix, const char* rootCACert) {
     mqttServer = server;
     mqttPort = port;
-    mqttUsername = username;
+    mqttUser = username;
     mqttPassword = password;
     mqttClientId = clientId;
     mqttTopicPrefix = topicPrefix;
     rootCA = rootCACert;
     
-    // Configure secure client
-    wifiClient->setCACert(rootCA);
     
     // Configure MQTT client
     mqttClient->setServer(mqttServer, mqttPort);
@@ -74,7 +72,7 @@ bool MqttHandler::connect() {
     while (!mqttClient->connected() && attempts < 5) {
         Serial.println("Connecting to MQTT...");
         
-        if (mqttClient->connect(mqttClientId, mqttUsername, mqttPassword)) {
+        if (mqttClient->connect(mqttClientId, mqttUser, mqttPassword)) {
             Serial.println("Connected to MQTT broker");
             isConnected = true;
             
