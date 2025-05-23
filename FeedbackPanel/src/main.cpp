@@ -85,6 +85,43 @@ void setup() {
 void loop() {
 }
 
+void handleButtonResult(ButtonHandler* button) {
+    xTaskCreate(handleButtonCooldown, "Handle Button Press", 10000, (void*)&button, 1, NULL);
+
+    handleButtonCooldown((void*)&button);
+    handleNetworkRequest(button);
+}
+
+void handleNetworkRequest(ButtonHandler* button) {
+    // make network call here
+    networkHandler.connect();
+
+    mqttHandler.sendResult(button); // send result for the first button
+
+    networkHandler.disconnect();
+}
+
+void handleButtonCooldown(void* param) {
+    ButtonHandler* button = *(ButtonHandler**)param;
+    button->handleButtonPress();
+
+    while(coolDownStart > 0 && (millis() - coolDownStart) < BUTTON_COOLDOWN){
+        delay(50); // wait for cooldown to end
+    }
+
+    coolDownFinished();
+}
+
+// void listenForButtonPress(ButtonHandler* button){
+//     if (digitalRead(button->getButtonPin()) == LOW) {
+//         unsigned long currentTime = millis();
+//         if ((currentTime - button->lastDebounceTime) > DEBOUNCE_TIME) {
+//             button->handleButtonPress();
+//             button->lastDebounceTime = currentTime;
+//         }
+//     }
+// }
+
 void enableWakeUpListeners(){
     for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
         btns[i]->turnOffLED(); // turn off all LEDs
