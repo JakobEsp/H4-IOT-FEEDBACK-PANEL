@@ -26,3 +26,6 @@ Vi har siddet og lavet nogle små ændinger samt testet den på powerbanken. Vi 
 **23/05**
 *08:01*
 Fik Mqtt til at virke! Så nu skal vi have sendt noget god data med så man nemt ved hvilken smiley der er trykket ud fra dataen. Efter vil vi drøfte hvad der kan optimeres.
+
+*10:06*
+Jeg har lavet noget oprydning i koden. forsøgte mig ad med at lave at klasse til at håndtere deep sleep. Det fungerede til at putte enheden i sleep. Men jeg havde nogle problemer med at få den til at vågne på touch. Tror det kunne have noget at gøre med pointeren til buttons som jeg passede ind til klassen fra main, som ikke var korrekt.
