@@ -1,7 +1,7 @@
 #include "mqttHandler.h"
 #include "ArduinoJson.h"
 
-TimeHandler timeHandler; // <-- This is the only definition
+TimeHandler timeHandler; 
 
 MqttHandler::MqttHandler(WiFiClient* wifiClient) {
     this->client = new PubSubClient(*wifiClient);

@@ -31,7 +31,6 @@ void enableWakeUpListeners();
 
 // TimeHandler timeHandler;
 NetworkHandler networkHandler;
-WiFiClient wifiClient;
 MqttHandler mqttHandler(&wifiClient);
 
 int coolDownStart = 0; // variable to store the start time of the cooldown

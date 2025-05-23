@@ -2,8 +2,9 @@
 #define NETWORKHANDLER_H
 #include <WiFi.h>
 
-class NetworkHandler {
+extern WiFiClient wifiClient;
 
+class NetworkHandler {
     public:
         void connect();
         void disconnect();
