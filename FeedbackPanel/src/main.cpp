@@ -21,6 +21,8 @@
 #define TOUCH_BTN_YELLOW 6
 #define TOUCH_BTN_RED 7
 
+#define DEBOUNCE_TIME 50 // debounce time in milliseconds
+#define BUTTON_COOLDOWN 7000 // 7 seconds cooldown time
 
 
 void startCoolDown();
@@ -32,10 +34,6 @@ NetworkHandler networkHandler;
 WiFiClient wifiClient;
 MqttHandler mqttHandler(&wifiClient);
 
-int debounceTime = 50; // debounce time in milliseconds
-
-
-int buttonCooldown = 7000; // 7 seconds cooldown time
 int coolDownStart = 0; // variable to store the start time of the cooldown
 
 ButtonHandler green_btn("Very Happy",LED_GREEN, BTN_GREEN, TOUCH_BTN_GREEN, startCoolDown);
@@ -57,6 +55,7 @@ void setup() {
     touch_pad_t touchPin = esp_sleep_get_touchpad_wakeup_status();
     if (touchPin == TOUCH_PAD_MAX) {
         Serial.println("No touch pin detected");
+        // Could also go to sleep here
     } else {
         for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
             if(btns[i]->getTouchPin() == touchPin){
@@ -78,7 +77,7 @@ void setup() {
 
     networkHandler.disconnect();
 
-    while(coolDownStart > 0 && (millis() - coolDownStart) < buttonCooldown){
+    while(coolDownStart > 0 && (millis() - coolDownStart) < BUTTON_COOLDOWN){
         delay(50); // wait for cooldown to end
     }
 
