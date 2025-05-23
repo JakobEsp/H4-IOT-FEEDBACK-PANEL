@@ -30,7 +30,7 @@ void MqttHandler::sendResult(ButtonHandler* button) {
     timeHandler.begin();
     String time = timeHandler.getTimeString();
     StaticJsonDocument<128> result;
-    result["feedback"] = button->getButtonPin();
+    result["feedback"] = button->getFeedbackName();
     result["timestamp"] = time;
     char payload[128];
     serializeJson(result, payload);

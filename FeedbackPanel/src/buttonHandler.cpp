@@ -7,12 +7,13 @@ void ButtonHandler::setup(){
     pinMode(buttonPin, INPUT_PULLUP);
 }
 
-ButtonHandler::ButtonHandler(int ledPin, int buttonPin, int touchPin, void (*callback)()){
+ButtonHandler::ButtonHandler(String feedbackName, int ledPin, int buttonPin, int touchPin, void (*callback)()){
     this->ledPin = ledPin;
     this->buttonPin = buttonPin;
     this->touchPin = touchPin;
     this->debounceTime = DEBOUNCE_TIME;
     this->callback = callback;
+    this->feedbackName = feedbackName;
 }
 
 void ButtonHandler::handleButtonPress(){

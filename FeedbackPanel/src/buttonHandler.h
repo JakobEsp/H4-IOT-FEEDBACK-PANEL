@@ -15,8 +15,9 @@ private:
     void (*callback)();
     unsigned long lastDebounceTime = 0;
     unsigned long lastButtonPress = 0;
+    String feedbackName;
 public:
-    ButtonHandler(int ledPin, int buttonPin,int touchPin, void (*callback)());
+    ButtonHandler(String feedbackName, int ledPin, int buttonPin,int touchPin, void (*callback)());
     void setup();
     void handleButtonPress();
     void turnOffLED();
@@ -24,6 +25,7 @@ public:
     void enableWakeUpListener();
     int getButtonPin() { return buttonPin; }
     int getTouchPin() { return touchPin; }
+    String getFeedbackName() { return feedbackName; }
 };
 
 #endif
