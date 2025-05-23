@@ -24,7 +24,7 @@
 #define DEBOUNCE_TIME 50 // debounce time in milliseconds
 #define BUTTON_COOLDOWN 7000 // 7 seconds cooldown time
 
-
+void goToSleep();
 void startCoolDown();
 void coolDownFinished();
 void enableWakeUpListeners();
@@ -65,8 +65,7 @@ void setup() {
     }
     if(!coolDownStart){
         Serial.println("No Cooldown started Going to sleep");
-        enableWakeUpListeners();
-        esp_deep_sleep_start(); 
+        goToSleep();
     }
 
     // make newtork call here
@@ -96,9 +95,8 @@ void enableWakeUpListeners(){
 void coolDownFinished(){
     coolDownStart = 0; // reset cooldown
     Serial.println("Cooldown ended");
-    enableWakeUpListeners();
     Serial.println("Going sleep"); 
-    esp_deep_sleep_start(); 
+    goToSleep();
 }
 
 void startCoolDown(){
@@ -108,3 +106,9 @@ void startCoolDown(){
     } 
     Serial.println("Cooldown started");
 }
+
+void goToSleep(){
+    Serial.println("Going to sleep...");
+    enableWakeUpListeners();
+    esp_deep_sleep_start();
+}   
