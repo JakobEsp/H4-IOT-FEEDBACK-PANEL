@@ -18,3 +18,11 @@ I morgen vil vi færdiggøre vores deep sleep og få implementeret MQTT, til dat
 *11:20*
 Vi har fået færdiggjort den første implementation af deepsleep hvor hele flowet virker, dog uden mqtt kald. Der er blevet lavet en del overvejelser om hvor meget der skulle hånderes i setup & i loop metoden. Men siden vores nuværende løsning ikke har brug for loop, så køre det hele i setup, uden debounce da der kun er et input (touch wakeup).
 Næste step er at få implementeret og færdiggjort mqttHandler klassen.
+
+
+*13:00*
+Vi har siddet og lavet nogle små ændinger samt testet den på powerbanken. Vi har også arbejdet videre på mqtt klassen, men uden held for nu. Så vi er gået i gang med et lille refactor af klassen. Og den virker tæt på at virke.
+
+**23/05**
+*08:01*
+Fik Mqtt til at virke! Så nu skal vi have sendt noget god data med så man nemt ved hvilken smiley der er trykket ud fra dataen. Efter vil vi drøfte hvad der kan optimeres.
