@@ -19,6 +19,7 @@ extern TimeHandler timeHandler;
 class MqttHandler {
     private:
         PubSubClient* client;
+        void reconnect();
     public:
         MqttHandler(WiFiClient* wifiClient);
         void sendResult(ButtonHandler* button);

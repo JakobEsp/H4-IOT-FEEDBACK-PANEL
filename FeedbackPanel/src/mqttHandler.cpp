@@ -8,16 +8,25 @@ MqttHandler::MqttHandler(WiFiClient* wifiClient) {
     this->client->setServer(MQTT_SERVER, MQTT_PORT);
 }
 
-void MqttHandler::sendResult(ButtonHandler* button) {
-    // Example implementation
-    Serial.println("Sending result...");
-
+void MqttHandler::reconnect() {
     while (!client->connected()) {
         Serial.println("Connecting to MQTT...");
-        client->connect(MQTT_USERNAME, MQTT_USERNAME, MQTT_PASSWORD);
-        return;
+        if (client->connect(MQTT_USERNAME, MQTT_USERNAME, MQTT_PASSWORD)) {
+            Serial.println("Connected to MQTT broker");
+        } else {
+            Serial.print("Failed to connect to MQTT, rc=");
+            Serial.print(client->state());
+            Serial.println(" Retrying in 2 seconds");
+            delay(2000);
+        }
     }
-    Serial.println("Connected to MQTT broker");
+}
+
+void MqttHandler::sendResult(ButtonHandler* button) {
+
+    if (!client->connected()) {
+        reconnect();
+    }
     timeHandler.begin();
     String time = timeHandler.getTimeString();
     StaticJsonDocument<128> result;
@@ -25,6 +34,7 @@ void MqttHandler::sendResult(ButtonHandler* button) {
     result["timestamp"] = time;
     char payload[128];
     serializeJson(result, payload);
+    Serial.println("Sending result...");
     boolean succes = client->publish(MQTT_TOPIC, payload);
     if (succes) {
         Serial.println("Result sent successfully");
