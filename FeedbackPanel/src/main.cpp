@@ -38,10 +38,10 @@ int debounceTime = 50; // debounce time in milliseconds
 int buttonCooldown = 7000; // 7 seconds cooldown time
 int coolDownStart = 0; // variable to store the start time of the cooldown
 
-ButtonHandler green_btn(LED_GREEN, BTN_GREEN, TOUCH_BTN_GREEN, startCoolDown);
-ButtonHandler blue_btn(LED_BLUE, BTN_BLUE, TOUCH_BTN_BLUE, startCoolDown);
-ButtonHandler yellow_btn(LED_YELLOW, BTN_YELLOW, TOUCH_BTN_YELLOW, startCoolDown);
-ButtonHandler red_btn(LED_RED, BTN_RED, TOUCH_BTN_RED, startCoolDown);
+ButtonHandler green_btn("Very Happy",LED_GREEN, BTN_GREEN, TOUCH_BTN_GREEN, startCoolDown);
+ButtonHandler blue_btn("Moderately Happy",LED_BLUE, BTN_BLUE, TOUCH_BTN_BLUE, startCoolDown);
+ButtonHandler yellow_btn("Not Satisfied",LED_YELLOW, BTN_YELLOW, TOUCH_BTN_YELLOW, startCoolDown);
+ButtonHandler red_btn("Much Angry",LED_RED, BTN_RED, TOUCH_BTN_RED, startCoolDown);
 
 ButtonHandler* btns[] = {&green_btn, &blue_btn, &yellow_btn, &red_btn};
 
@@ -53,17 +53,15 @@ void setup() {
     yellow_btn.setup();
     red_btn.setup();
 
+    ButtonHandler* selectedButton = nullptr;
     touch_pad_t touchPin = esp_sleep_get_touchpad_wakeup_status();
     if (touchPin == TOUCH_PAD_MAX) {
         Serial.println("No touch pin detected");
     } else {
         for(int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++){
             if(btns[i]->getTouchPin() == touchPin){
-                Serial.print("Touch Pin activiated ");
-                Serial.println(touchPin);
                 btns[i]->handleButtonPress();
-                Serial.println("cooldown sharted");
-                Serial.println(coolDownStart);
+                selectedButton = btns[i];
             }
         }
     }
@@ -76,7 +74,7 @@ void setup() {
     // make newtork call here
     networkHandler.connect();
 
-    mqttHandler.sendResult(&green_btn);
+    mqttHandler.sendResult(selectedButton);
 
     networkHandler.disconnect();
 
