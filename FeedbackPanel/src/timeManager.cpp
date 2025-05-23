@@ -29,21 +29,21 @@ void TimeHandler::printLocalTime() {
     Serial.println();
 }
 
-// String TimeHandler::getTimeString() {
-//     struct tm timeinfo;
-//     if (!getLocalTime(&timeinfo)) {
-//         return "Failed to obtain time";
-//     }
+String TimeHandler::getTimeString() {
+    struct tm timeinfo;
+    if (!getLocalTime(&timeinfo)) {
+        return "Failed to obtain time";
+    }
     
-//     char timeStringBuff[50];
-//     strftime(timeStringBuff, sizeof(timeStringBuff), "%A, %B %d %Y %H:%M:%S", &timeinfo);
-//     return String(timeStringBuff);
-// }
+    char timeStringBuff[50];
+    strftime(timeStringBuff, sizeof(timeStringBuff), "%A, %B %d %Y %H:%M:%S", &timeinfo);
+    return String(timeStringBuff);
+}
 
-// bool TimeHandler::getLocalTime(struct tm* timeInfo) {
-//     if (!isInitialized) {
-//         Serial.println("Time not initialized! Call begin() first");
-//         return false;
-//     }
-//     return ::getLocalTime(timeInfo);
-// }
+bool TimeHandler::getLocalTime(struct tm* timeInfo) {
+    if (!isInitialized) {
+        Serial.println("Time not initialized! Call begin() first");
+        return false;
+    }
+    return ::getLocalTime(timeInfo);
+}

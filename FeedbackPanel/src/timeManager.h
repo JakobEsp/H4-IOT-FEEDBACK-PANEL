@@ -24,11 +24,11 @@ public:
     // Print the current time to Serial
     void printLocalTime();
     
-    // // Get the current time as a string
-    // String getTimeString();
+    // Get the current time as a string
+    String getTimeString();
     
-    // // Check if time was successfully obtained
-    // bool getLocalTime(struct tm* timeInfo);
+    // Check if time was successfully obtained
+    bool getLocalTime(struct tm* timeInfo);
 };
 
 #endif
